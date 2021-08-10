@@ -1,6 +1,7 @@
-#include "grafonavegacao.h"
+#include "grafomenorcaminho.h"
 
 #include <iostream>
+
 #include <list>
 
 int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
@@ -135,6 +136,18 @@ int* GrafoListaAdj::bfs(string rotuloVOrigem) {
     } 
 
     return distancia;
+}
+
+int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
+    int* temp;
+
+    return temp;
+}
+
+int* GrafoListaAdj::dijkstra(string rotuloVOrigem){
+    int* temp;
+
+    return temp;
 }
 
 vector<string> GrafoListaAdj::getVertices() {

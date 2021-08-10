@@ -6,7 +6,7 @@ int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
     for(int i = 0; i < vertices.size(); i++){
         if(vertices[i] == rotuloVertice){
             return i;
-        };
+        }
     }
 
     return -1;

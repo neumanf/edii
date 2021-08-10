@@ -3,6 +3,7 @@ add_executable(
     testGrafoListaAdj.cpp
     testGrafoMatrizAdj.cpp
     testGrafoNavegacao.cpp
+    # testMenorCaminho.cpp
     )
 
 target_link_libraries(
@@ -11,6 +12,7 @@ target_link_libraries(
     grafolistaadj
     grafomatadj
     grafonavegacao
+    # grafomenorcaminho
     )
 
 add_test(
