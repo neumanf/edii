@@ -5,17 +5,14 @@
 struct GrafoMatrizAdj* inicializar(int numVertices, bool ponderado) {
     int valorPadrao = ponderado ? INT_MAX : 0;
 
-    struct GrafoMatrizAdj* grafo;
+    GrafoMatrizAdj* grafo = (GrafoMatrizAdj *) malloc(sizeof(GrafoMatrizAdj));
 
-    // Inicializa as linhas
-    grafo->arestas = new int*[numVertices];
-    grafo->rotuloVertices = new char*[numVertices];
+    grafo->arestas = (int **) calloc(numVertices, sizeof(int*));
+    grafo->rotuloVertices = (char**) calloc(numVertices, sizeof(char*));
 
     for(int i = 0; i < numVertices; i++){
-        // Inicializa as colunas
-        grafo->arestas[i] = new int[numVertices];
+        grafo->arestas[i] = (int *) calloc(numVertices, sizeof(int));
 
-        // Atribui os valores iniciais
         for(int j = 0; j < numVertices; j++){
             grafo->arestas[i][j] = valorPadrao;
         }
@@ -37,7 +34,7 @@ struct GrafoMatrizAdj* inicializar(int numVertices, bool ponderado) {
 
 int obterIndiceVertice(struct GrafoMatrizAdj* grafo, char* rotuloVertice) {
     for(int i = 0; i < grafo->maxNumVertices; i++){
-        if(grafo->rotuloVertices[i] = rotuloVertice){
+        if(grafo->rotuloVertices[i] == rotuloVertice){
             return i;
         }
     }
@@ -46,15 +43,24 @@ int obterIndiceVertice(struct GrafoMatrizAdj* grafo, char* rotuloVertice) {
 }
 
 void inserirAresta(struct GrafoMatrizAdj* grafo, char* rotuloVOrigem, char* rotuloVDestino, int peso) {
-    
+    int v1Index = obterIndiceVertice(grafo, rotuloVOrigem);
+    int v2Index = obterIndiceVertice(grafo, rotuloVDestino);
 
-
+    grafo->arestas[v1Index][v2Index] = peso;
 }
 
 void inserirVertice(struct GrafoMatrizAdj* grafo, char* rotuloVertice) {
     grafo->rotuloVertices[grafo->verticesInseridos] = rotuloVertice;
+    grafo->verticesInseridos++;
 }
 
 bool saoConectados(struct GrafoMatrizAdj* grafo, char* rotuloVOrigem, char* rotuloVDestino) {
-    return true;
+    int v1Index = obterIndiceVertice(grafo, rotuloVOrigem);
+    int v2Index = obterIndiceVertice(grafo, rotuloVDestino);
+
+    if((v1Index != -1 && v2Index != -1) && grafo->arestas[v1Index][v2Index] > 0){ 
+        return true;
+    }
+    
+    return false;
 }

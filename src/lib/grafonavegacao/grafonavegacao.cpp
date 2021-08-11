@@ -16,9 +16,9 @@ int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
 void GrafoListaAdj::dfs(string rotuloVOrigem, bool* indicesVerticesVisitados) {
     int vIndex = obterIndiceVertice(rotuloVOrigem);
 
-    cout << "[";
-    for(int i = 0; i < vertices.size(); i++) cout << indicesVerticesVisitados[i] << ", ";
-    cout << "]\n";
+    // cout << "[";
+    // for(int i = 0; i < vertices.size(); i++) cout << indicesVerticesVisitados[i] << ", ";
+    // cout << "]\n";
 
     if(indicesVerticesVisitados[vIndex]) return;
 
@@ -58,6 +58,9 @@ void GrafoListaAdj::inserirArestaDirecionada(string rotuloVOrigem, string rotulo
     int v1Index = obterIndiceVertice(rotuloVOrigem);
     int v2Index = obterIndiceVertice(rotuloVDestino);
 
+    cout << "rotuloVOrigem: " << rotuloVOrigem << ", index: " << v1Index << endl;
+    cout << "rotuloVDestino: " << rotuloVDestino << ", index: " << v2Index << endl;
+
     arestas.at(v1Index).push_back(make_pair(v2Index, peso));
 }
 
@@ -75,7 +78,36 @@ bool GrafoListaAdj::saoConectados(string rotuloVOrigem, string rotuloVDestino) {
 }
 
 bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
-    return true;
+    int v1Index = obterIndiceVertice(rotuloVOrigem);
+    int v2Index = obterIndiceVertice(rotuloVDestino);
+
+    if(v1Index == v2Index) return false;
+
+    int vTamanho = vertices.size();
+
+    for(int i = 0; i < vTamanho; i++){
+        bool* visitado = new bool[vTamanho]; 
+        
+        for(int i = 0; i < vTamanho; i++){
+            visitado[i] = false; 
+        }
+
+        dfs(rotuloVOrigem, visitado);
+
+        cout << "[";
+        for(int i = 0; i < vTamanho; i++){
+            cout << visitado[i] << (i == vTamanho - 1 ? "" : ", ");
+        }
+        cout << "]\n";
+
+        if(visitado[vTamanho-1]){
+            return true;
+        }
+
+        delete visitado;
+    }
+
+    return false;
 }
 
 int GrafoListaAdj::colorir(){
