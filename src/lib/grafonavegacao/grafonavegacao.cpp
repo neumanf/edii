@@ -81,7 +81,20 @@ bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
     int v1Index = obterIndiceVertice(rotuloVOrigem);
     int v2Index = obterIndiceVertice(rotuloVDestino);
 
-    if(v1Index == v2Index) return false;
+    // int* distancias = bfs(rotuloVOrigem);
+
+    // cout << "[";
+    // for(int i = 0; i < vertices.size(); i++){
+    //     cout << distancias[i] << " ";
+    // }
+    // cout << "]\n";
+
+
+    // if(distancias[v2Index] > 0) return true;
+
+    // free(distancias);
+
+    // return false; 
 
     int vTamanho = vertices.size();
 
@@ -100,7 +113,7 @@ bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
         }
         cout << "]\n";
 
-        if(visitado[vTamanho-1]){
+        if(visitado[v2Index]){
             return true;
         }
 
@@ -123,9 +136,21 @@ int GrafoListaAdj::colorir(){
         if(!visitado[i]){
             dfs(vertices[i], visitado);
 
-            vertices[i] = to_string(cor);
-
             cor++;
+        }
+
+        for(int j = 0; j < vTamanho; j++) {
+            cout << "vertices[i]: " << vertices[i] << ", vertices[j]: " << vertices[j] << ", saoConectados: " << saoConectados(vertices[i], vertices[j]) << endl;
+
+            if(saoConectados(vertices[i], vertices[j])){
+                // cout << vertices[i][0]<< ", " << vertices[j][0] << 
+
+                vertices[j] = to_string(cor);
+            }
+
+            if(vertices[i][0] == 'v'){
+                vertices[i] = to_string(cor);
+            }
         }
     }
 
@@ -133,6 +158,7 @@ int GrafoListaAdj::colorir(){
     //     cout << i << ", ";
     // }
     // cout << endl;
+    delete visitado;
 
     return cor;
 }

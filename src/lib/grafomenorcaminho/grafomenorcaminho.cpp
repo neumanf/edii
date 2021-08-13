@@ -1,7 +1,8 @@
 #include "grafomenorcaminho.h"
 
 #include <iostream>
-
+#include <tuple>
+#include <algorithm>
 #include <list>
 
 int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
@@ -138,16 +139,231 @@ int* GrafoListaAdj::bfs(string rotuloVOrigem) {
     return distancia;
 }
 
-int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
-    int* temp;
+// int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
+//     vector<pair<int, int>>::iterator traverse;
+//     int i, j, k;
+    
+//     int startVertex = obterIndiceVertice(rotuloVOrigem);
+//     int n = vertices.size();
+//     int* shortestDistances = new int[n];
 
-    return temp;
+//     for (i = 0; i <= vertices.size(); ++i) {
+//         shortestDistances[i] = POS_INF;
+//     }
+
+//     shortestDistances[startVertex] = 0;
+
+//     for (i = 1; i <= vertices.size() - 1; ++i) {
+//         for (j = 1; j <= vertices.size(); ++j) {
+//             traverse = arestas[j].begin();
+            
+//             while (traverse != arestas[j].end()) {
+//                 if (shortestDistances[j] == POS_INF) {
+//                     ++traverse;
+//                     continue;
+//                 }
+                 
+//                 if ((*traverse).second + shortestDistances[j] < shortestDistances[(*traverse).first]) {
+//                     shortestDistances[(*traverse).first] = (*traverse).second + shortestDistances[j];
+//                 }
+                 
+//                 ++traverse;
+//             }
+//         }
+//     }
+     
+//     for (j = 1; j <= vertices.size(); ++j) {
+//         traverse = arestas[j].begin();
+         
+//         while (traverse != arestas[j].end()) {
+//             cout << "(*traverse).first: " << (*traverse).first << ", (*traverse).second: " << (*traverse).second << endl;
+            
+//             if ((*traverse).second + shortestDistances[j] < shortestDistances[(*traverse).first]) {
+//                 cout << "NEG_INF" << endl;
+//                 shortestDistances[(*traverse).first] = NEG_INF;
+//             }
+            
+//             ++traverse;
+//         }
+//     }
+    
+//     return shortestDistances;
+// }
+
+// int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
+//         // Initialize the distance / cost from the source node to all other nodes to some max value.
+//         int src = obterIndiceVertice(rotuloVOrigem);
+//         int node_count = vertices.size();
+//         int* distance = new int[node_count];
+
+//         for(int i = 1; i <= node_count; i++){
+//             distance[i] = POS_INF;
+//         }
+        
+//         // Distance/cost from the source node to itself is 0.
+//         distance[src] = 0;
+
+//         cout << "[";
+//         for(int i = 0; i < vertices.size(); i++){
+//             cout << vertices.at(i) << (i == vertices.size() - 1 ? "" : ", ");
+//         }
+//         cout << "]\n";
+
+//         for(int i = 0; i < arestas.size(); i++){
+//             cout << i <<": [";
+//             for(int j = 0; j < arestas.at(i).size(); j++){
+//                 cout << "{" << arestas.at(i).at(j).first << ", " << arestas.at(i).at(j).second << (j == arestas.at(i).size() - 1 ? "}" : "}, "); 
+//             }
+//             cout << "]\n";
+//         }
+
+//         // cout << "src: " << src << ", arestas[src]:" << arestas[src][0].first << endl;
+
+//         for (int i = 0; i < node_count; i++) {
+//             for (auto& it : arestas[src]) {
+//                 cout << "distance[it.first]: " << distance[it.first] << ", distance[src]: " << distance[src] << ", it.second:" << it.second << endl;
+//                 if (distance[it.first] > distance[src] + it.second) {
+//                     distance[it.first] = distance[src] + it.second;
+//                 }
+//             }
+//         }
+
+//         for (auto& it : arestas[src]) {
+//             if (distance[it.first] > distance[src] + it.second) {
+//                 distance[it.first] = NEG_INF;
+//             }
+//         }
+
+//         return distance;
+// }
+
+int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
+    int vIndex = obterIndiceVertice(rotuloVOrigem);
+    int vTamanho = vertices.size();
+
+    int* distancia = new int[vTamanho];
+    list<int> q;
+
+    for(int i = 1; i <= vTamanho; i++){
+        distancia[i] = POS_INF;
+    }
+
+    distancia[vIndex] = 0;
+
+    for(int i = 1; i <= vTamanho - 1; i++){
+        int j = 0;
+
+        for(auto e: arestas[vIndex]){
+            int a = e.first;
+            int b = j;
+            int w = e.second;
+
+            cout << "a: " << a << ", b: " << b << ", w: " << w << endl;
+            cout << "distancia[a]: " << distancia[a] << ", distancia[b]: " << distancia[b] << endl;
+
+            distancia[b] = min(distancia[b], distancia[a] + w);
+            j++;
+        }
+    }
+
+    int i = 0;
+    for(auto e : arestas[vIndex]) {
+        int a = e.first;
+        int b = i;
+        int w = e.second;
+
+        if(distancia[a] + w < distancia[b]){
+            distancia[b] = NEG_INF;
+        }
+
+        i++;
+    }
+
+    return distancia;
+}
+
+// int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
+//     int vIndex = obterIndiceVertice(rotuloVOrigem);
+//     int vTamanho = vertices.size();
+
+//     int* distancia = new int[vTamanho];
+//     list<int> q;
+
+//     for(int i = 1; i <= vTamanho; i++){
+//         distancia[i] = POS_INF;
+//     }
+
+//     distancia[vIndex] = 0;
+
+//     for(int i = 1; i <= vTamanho; i++){
+//         for(int j = 0; j < arestas[vIndex].size() - 1; j++) {
+//             int a = arestas[vIndex][j].first;
+//             int b = j;
+//             int w = arestas[vIndex][j].second;
+
+//             cout << "j: " << j << endl;
+//             cout << "a: " << a << ", b: " << b << ", w: " << w << endl;
+//             cout << "distancia[a]: " << distancia[a] << ", distancia[b]: " << distancia[b] << endl;
+
+//             distancia[b] = min(distancia[b], distancia[a] + w);
+//         }
+//     }
+
+//     for(int j = 0; j < arestas[vIndex].size() - 1; j++) {
+//         int a = arestas[vIndex][j].first;
+//         int b = j;
+//         int w = arestas[vIndex][j].second;
+
+//         if(distancia[a] + w < distancia[b]){
+//             distancia[b] = NEG_INF;
+//         }
+//     }
+
+//     return distancia;
+// }
+
+int findMin(int n, int distancia[], bool visitado[]){
+    int min = POS_INF;
+    int vertice = 0;
+
+    for(int i = 0; i < n; i++){
+        if(visitado[i] == false && min > distancia[i]){
+            min = distancia[i];
+            vertice = i;
+        }
+    }
+
+    return vertice;
 }
 
 int* GrafoListaAdj::dijkstra(string rotuloVOrigem){
-    int* temp;
+    int vIndex = obterIndiceVertice(rotuloVOrigem);
+    int n = vertices.size();
+    bool* visitado = new bool[n]; 
+    int* distancia = new int[n];
+    
+    for(int i = 0; i < n; i++){
+        distancia[i] = POS_INF;                                          
+        visitado[i] = false;                                                 
+    }
+    
+    distancia[vIndex] = 0;                          
+    int count = 0;
+    
+    while(count < n){
+        int vertice = findMin(n, distancia, visitado);
+        visitado[vertice] = true;
 
-    return temp;
+        for(auto &i : arestas[vertice]){
+            if(visitado[i.first] == false){
+                distancia[i.first] = min(distancia[i.first], distancia[vertice] + (i.second));
+            }
+        }
+
+        count++;
+    }
+    
+    return distancia;
 }
 
 vector<string> GrafoListaAdj::getVertices() {

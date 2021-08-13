@@ -10,7 +10,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_subdirectory(src/lib/grafolistaadj)
 add_subdirectory(src/lib/grafomatadj)
 add_subdirectory(src/lib/grafonavegacao)
-# add_subdirectory(src/lib/grafomenorcaminho)
+add_subdirectory(src/lib/grafomenorcaminho)
 
 add_executable(main src/main.cpp src/lib/grafomatadj/grafomatadj.cpp src/lib/grafonavegacao/grafonavegacao.cpp)
 
