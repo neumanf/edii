@@ -1,8 +1,6 @@
 #include "grafomenorcaminho.h"
 
 #include <iostream>
-#include <tuple>
-#include <algorithm>
 #include <list>
 
 int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
@@ -244,39 +242,58 @@ int* GrafoListaAdj::bellmanFord(string rotuloVOrigem){
     int* distancia = new int[vTamanho];
     list<int> q;
 
-    for(int i = 1; i <= vTamanho; i++){
+    for(int i = 0; i < vTamanho; i++){
         distancia[i] = POS_INF;
     }
 
     distancia[vIndex] = 0;
 
-    for(int i = 1; i <= vTamanho - 1; i++){
+    cout << "[";
+    for(int i = 0; i < vertices.size(); i++){
+        cout << vertices.at(i) << (i == vertices.size() - 1 ? "" : ", ");
+    }
+    cout << "]\n";
+
+    for(int i = 0; i < arestas.size(); i++){
+        cout << i <<": [";
+        for(int j = 0; j < arestas.at(i).size(); j++){
+            cout << "{" << arestas.at(i).at(j).first << ", " << arestas.at(i).at(j).second << (j == arestas.at(i).size() - 1 ? "}" : "}, "); 
+        }
+        cout << "]\n";
+    }
+
+    for(int i = 0; i < vTamanho - 1; i++){
         int j = 0;
+        cout << i << endl;
+        for(auto aresta : arestas){
+            for(auto ares : aresta){
+                int origem = j;
+                int destino = ares.first;
+                int peso = ares.second;
 
-        for(auto e: arestas[vIndex]){
-            int a = e.first;
-            int b = j;
-            int w = e.second;
+                cout << "origem: " << origem << ", destino: " << destino << ", peso: " << peso << endl;
+                cout << "distancia[a]: " << distancia[origem] << ", distancia[destino]: " << distancia[destino] << endl;
 
-            cout << "a: " << a << ", b: " << b << ", w: " << w << endl;
-            cout << "distancia[a]: " << distancia[a] << ", distancia[b]: " << distancia[b] << endl;
-
-            distancia[b] = min(distancia[b], distancia[a] + w);
+                if(distancia[origem] + peso < distancia[destino]){
+                    distancia[destino] = distancia[origem] + peso;
+                }
+            }
             j++;
         }
     }
 
-    int i = 0;
-    for(auto e : arestas[vIndex]) {
-        int a = e.first;
-        int b = i;
-        int w = e.second;
+    int j = 0;
+    for(auto aresta : arestas){
+        for(auto ares : aresta){
+            int origem = j;
+            int destino = ares.first;
+            int peso = ares.second;
 
-        if(distancia[a] + w < distancia[b]){
-            distancia[b] = NEG_INF;
+            if(distancia[origem] + peso < distancia[destino]){
+                distancia[destino] = NEG_INF;
+            }
         }
-
-        i++;
+        j++;
     }
 
     return distancia;

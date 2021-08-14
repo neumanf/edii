@@ -16,18 +16,25 @@ int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
 void GrafoListaAdj::dfs(string rotuloVOrigem, bool* indicesVerticesVisitados) {
     int vIndex = obterIndiceVertice(rotuloVOrigem);
 
-    // cout << "[";
-    // for(int i = 0; i < vertices.size(); i++) cout << indicesVerticesVisitados[i] << ", ";
-    // cout << "]\n";
+    // // cout << "[";
+    // // for(int i = 0; i < vertices.size(); i++) cout << indicesVerticesVisitados[i] << ", ";
+    // // cout << "]\n";
 
-    if(indicesVerticesVisitados[vIndex]) return;
+    // if(indicesVerticesVisitados[vIndex]) return;
 
-    indicesVerticesVisitados[vIndex] = true;
+    // indicesVerticesVisitados[vIndex] = true;
 
-    vector<pair<int,int>> vizinhos = arestas[vIndex];
+    // vector<pair<int,int>> vizinhos = arestas[vIndex];
 
-    for(int i = 0; i < vizinhos.size(); i++){
-        dfs(vertices.at(vizinhos[i].first), indicesVerticesVisitados);
+    // for(int i = 0; i < vizinhos.size(); i++){
+    //     dfs(vertices.at(vizinhos[i].first), indicesVerticesVisitados);
+    // }
+
+    for(auto x: arestas[vIndex]){
+        if(indicesVerticesVisitados[vIndex]) continue;
+        indicesVerticesVisitados[vIndex] = true;
+        
+        dfs(vertices.at(x.first), indicesVerticesVisitados);
     }
 }
 
@@ -77,9 +84,31 @@ bool GrafoListaAdj::saoConectados(string rotuloVOrigem, string rotuloVDestino) {
     return false;
 }
 
+// bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
+//     int v1Index = obterIndiceVertice(rotuloVOrigem);
+//     int v2Index = obterIndiceVertice(rotuloVDestino);
+
+//     if(v1Index == v2Index) return true;
+
+//     int vTamanho = vertices.size();
+//     bool* visitado = new bool[vTamanho]; 
+//     vector<int> stack;
+        
+//     for(int i = 0; i < vTamanho; i++){
+//         visitado[i] = false; 
+//     }
+
+//     stack.push_back(v1Index);
+//     visitado[v1Index] = true;
+
+//     if(!)
+// }
+
 bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
     int v1Index = obterIndiceVertice(rotuloVOrigem);
     int v2Index = obterIndiceVertice(rotuloVDestino);
+
+    // if(v1Index == v2Index) return true;
 
     // int* distancias = bfs(rotuloVOrigem);
 
