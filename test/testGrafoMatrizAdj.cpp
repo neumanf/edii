@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/lib/grafomatadj/grafomatadj.h"
+#include "../src/lib/grafomatadj/grafomatadjexercicio.h"
 
 class GrafoMatrizAdjTest : public ::testing::Test {
 protected:

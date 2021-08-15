@@ -16,24 +16,11 @@ int GrafoListaAdj::obterIndiceVertice(string rotuloVertice){
 void GrafoListaAdj::dfs(string rotuloVOrigem, bool* indicesVerticesVisitados) {
     int vIndex = obterIndiceVertice(rotuloVOrigem);
 
-    // // cout << "[";
-    // // for(int i = 0; i < vertices.size(); i++) cout << indicesVerticesVisitados[i] << ", ";
-    // // cout << "]\n";
-
-    // if(indicesVerticesVisitados[vIndex]) return;
-
-    // indicesVerticesVisitados[vIndex] = true;
-
-    // vector<pair<int,int>> vizinhos = arestas[vIndex];
-
-    // for(int i = 0; i < vizinhos.size(); i++){
-    //     dfs(vertices.at(vizinhos[i].first), indicesVerticesVisitados);
-    // }
+    if(indicesVerticesVisitados[vIndex]) return;
+    
+    indicesVerticesVisitados[vIndex] = true;
 
     for(auto x: arestas[vIndex]){
-        if(indicesVerticesVisitados[vIndex]) continue;
-        indicesVerticesVisitados[vIndex] = true;
-        
         dfs(vertices.at(x.first), indicesVerticesVisitados);
     }
 }
@@ -105,8 +92,8 @@ bool GrafoListaAdj::saoConectados(string rotuloVOrigem, string rotuloVDestino) {
 // }
 
 bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
-    int v1Index = obterIndiceVertice(rotuloVOrigem);
-    int v2Index = obterIndiceVertice(rotuloVDestino);
+    int s = obterIndiceVertice(rotuloVOrigem);
+    int d = obterIndiceVertice(rotuloVDestino);
 
     // if(v1Index == v2Index) return true;
 
@@ -125,28 +112,76 @@ bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
 
     // return false; 
 
-    int vTamanho = vertices.size();
+    int n = vertices.size();
+    // bool* visitado = new bool[vTamanho]; 
 
-    for(int i = 0; i < vTamanho; i++){
-        bool* visitado = new bool[vTamanho]; 
+    // for(int i = 0; i < vTamanho; i++){
+    //     visitado[i] = false; 
+    // }
+
+    // dfs(rotuloVOrigem, visitado);
+
+    // cout << "[";
+    // for(int i = 0; i < vTamanho; i++){
+    //     cout << visitado[i] << (i == vTamanho - 1 ? "" : ", ");
+    // }
+    // cout << "]\n";
+
+    // if(visitado[v2Index]){
+    //     return true;
+    // }
+
+    // delete visitado;
+
+    // for(int i = 0; i < vTamanho; i++){
+    //     bool* visitado = new bool[vTamanho]; 
         
-        for(int i = 0; i < vTamanho; i++){
-            visitado[i] = false; 
+    //     for(int i = 0; i < vTamanho; i++){
+    //         visitado[i] = false; 
+    //     }
+
+    //     dfs(rotuloVOrigem, visitado);
+
+    //     cout << "[";
+    //     for(int i = 0; i < vTamanho; i++){
+    //         cout << visitado[i] << (i == vTamanho - 1 ? "" : ", ");
+    //     }
+    //     cout << "]\n";
+
+    //     if(visitado[v2Index]){
+    //         return true;
+    //     }
+
+    //     delete visitado;
+    // }
+
+    if (s == d) return true;
+      //Mark all the vertices as unvisited.
+    bool *visited = new bool[n];
+
+    for (int i = 0; i < n; i++)
+        visited[i] = false;
+    
+    list<int> queue;
+
+    visited[s] = true;
+    queue.push_back(s);
+
+    vector<pair<int, int>>::iterator i;
+
+    while (!queue.empty()) {
+        s = queue.front();
+        queue.pop_front(); //Dequeue a vertex from queue and print it
+        //If an adjacent has not been visited, then mark it visited and enqueue it
+        for (i = arestas[s].begin(); i != arestas[s].end(); ++i) {
+            if ((*i).first == d)
+                return true;
+                // If this adjacent node is the destination node, then return true else continue to BFS
+            if (!visited[(*i).first]) {
+                visited[(*i).first] = true;
+                queue.push_back((*i).first);
+            }
         }
-
-        dfs(rotuloVOrigem, visitado);
-
-        cout << "[";
-        for(int i = 0; i < vTamanho; i++){
-            cout << visitado[i] << (i == vTamanho - 1 ? "" : ", ");
-        }
-        cout << "]\n";
-
-        if(visitado[v2Index]){
-            return true;
-        }
-
-        delete visitado;
     }
 
     return false;
@@ -155,39 +190,58 @@ bool GrafoListaAdj::haCaminho(string rotuloVOrigem, string rotuloVDestino) {
 int GrafoListaAdj::colorir(){
     int cor = 0;
     int vTamanho = vertices.size();
-    bool* visitado = new bool[vTamanho]; 
-    
-    for(int i = 0; i < vTamanho; i++){
-        visitado[i] = false; 
-    }
 
     for(int i = 0; i < vTamanho; i++){
+        bool* visitado = new bool[vTamanho]; 
+    
+        for(int j = 0; j < vTamanho; j++){
+            visitado[j] = false; 
+        }
+
         if(!visitado[i]){
             dfs(vertices[i], visitado);
 
-            cor++;
+            cout << "[";
+            for(int j = 0; j < vTamanho; j++){
+                if(visitado[j]){
+                    cor++;
+                    vertices[j] = to_string(cor);
+                }
+                cout << visitado[j] << (j == vTamanho - 1 ? "" : ", ");
+            }
+            cout << "]\n";
+
+            
         }
 
-        for(int j = 0; j < vTamanho; j++) {
-            cout << "vertices[i]: " << vertices[i] << ", vertices[j]: " << vertices[j] << ", saoConectados: " << saoConectados(vertices[i], vertices[j]) << endl;
+        delete visitado;
 
-            if(saoConectados(vertices[i], vertices[j])){
-                // cout << vertices[i][0]<< ", " << vertices[j][0] << 
+        // for(int j = 0; j < vTamanho; j++) {
+        //     // cout << "vertices[i]: " << vertices[i] << ", vertices[j]: " << vertices[j] << ", saoConectados: " << saoConectados(vertices[i], vertices[j]) << endl;
+        //     // cout << "[";
+        //     // for(int i = 0; i < vertices.size(); i++){
+        //     //     cout << vertices.at(i) << (i == vertices.size() - 1 ? "" : ", ");
+        //     // }
+        //     // cout << "]\n";
 
-                vertices[j] = to_string(cor);
-            }
+        //     if(saoConectados(vertices[i], vertices[j])){
+        //         // cout << vertices[i][0]<< ", " << vertices[j][0] << 
 
-            if(vertices[i][0] == 'v'){
-                vertices[i] = to_string(cor);
-            }
-        }
+        //         vertices[j] = to_string(cor);
+        //     }
+
+        //     if(vertices[i][0] == 'v'){
+        //         cout << vertices[i] << " | colorindo com a cor " << cor << endl;
+        //         vertices[i] = to_string(cor);
+        //     }
+        // }
     }
 
     // for(auto i : vertices){
     //     cout << i << ", ";
     // }
     // cout << endl;
-    delete visitado;
+    // delete visitado;
 
     return cor;
 }

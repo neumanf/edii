@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/lib/grafomenorcaminho/grafomenorcaminho.h"
+#include "../src/lib/grafomenorcaminho/grafomenorcaminhoexercicio.h"
 using namespace std;
 
 class MenorCaminhoTest : public ::testing::Test {

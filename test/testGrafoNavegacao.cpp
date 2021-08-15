@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/lib/grafonavegacao/grafonavegacao.h"
+#include "../src/lib/grafonavegacao/grafonavegacaoexercicio.h"
 using namespace std;
 
 class GrafoListaAdjNavegacaoTest : public ::testing::Test {

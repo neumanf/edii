@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/lib/grafolistaadj/grafolistaadj.h"
+#include "../src/lib/grafolistaadj/grafolistaadjexercicio.h"
 using namespace std;
 
 class GrafoListaAdjTest : public ::testing::Test {
