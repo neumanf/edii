@@ -79,7 +79,9 @@ public:
 
     //sobrescrever operator< para que a priority_queue
     //ordene como desejamos
-    friend bool operator<(const Aresta& a1, const Aresta& a2);
+    friend bool operator<(const Aresta& a1, const Aresta& a2){
+        return a1.peso > a2.peso;
+    }
 
     GrafoListaAdj* KruskalMST();
 

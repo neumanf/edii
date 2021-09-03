@@ -1,80 +1,35 @@
 #include <iostream>
 #include <sstream>
 
-// #include "./lib/grafomatadj/grafomatadj.h"
-
 using namespace std;
 
-// void freeGrafo(struct GrafoMatrizAdj* grafo) {
-//     for (int i = 0; i < grafo->maxNumVertices; i++) {
-//         free(grafo->arestas[i]);
-//     }
-//     free(grafo->arestas);
-//     free(grafo->rotuloVertices);
-//     free(grafo);
-// }
+#include "./lib/grafomst/grafomst.h"
 
-// int main(){
-//     GrafoMatrizAdj* grafo = inicializar(10, false);
-
-// 	cout << grafo->maxNumVertices << endl;
-
-//     freeGrafo(grafo);
-
-//     return 0;
-// }
-
-#include "./lib/grafonavegacao/grafonavegacao.h"
-
-void construirGrafoCom5Componentes(GrafoListaAdj* grafo) {
-	//comp1
-	grafo->inserirArestaNaoDirecionada("v0", "v4");
-	grafo->inserirArestaNaoDirecionada("v0", "v8");
-	grafo->inserirArestaNaoDirecionada("v0", "v13");
-	grafo->inserirArestaNaoDirecionada("v0", "v14");
-
-	//comp2
-	grafo->inserirArestaNaoDirecionada("v1", "v5");
-	grafo->inserirArestaNaoDirecionada("v5", "v16");
-	grafo->inserirArestaNaoDirecionada("v5", "v17");
-
-	//comp3
-	grafo->inserirArestaNaoDirecionada("v3", "v9");
-	grafo->inserirArestaNaoDirecionada("v9", "v2");
-	grafo->inserirArestaNaoDirecionada("v15", "v9");
-	grafo->inserirArestaNaoDirecionada("v15", "v2");
-	grafo->inserirArestaNaoDirecionada("v15", "v10");
-
-	//comp4
-	grafo->inserirArestaNaoDirecionada("v6", "v7");
-	grafo->inserirArestaNaoDirecionada("v6", "v11");
-	grafo->inserirArestaNaoDirecionada("v7", "v11");
-
-	//comp5: v�rtice "v12" (sem arestas)
-}
-
-void construirGrafoNaoPonderado(GrafoListaAdj* grafo) {
-	grafo->inserirArestaNaoDirecionada("v1", "v2");
-	grafo->inserirArestaNaoDirecionada("v1", "v3");
-	grafo->inserirArestaNaoDirecionada("v2", "v4");
-	grafo->inserirArestaNaoDirecionada("v3", "v4");
-	grafo->inserirArestaNaoDirecionada("v3", "v5");
-	grafo->inserirArestaNaoDirecionada("v4", "v6");
-	grafo->inserirArestaNaoDirecionada("v4", "v7");
-	grafo->inserirArestaNaoDirecionada("v5", "v9");
-	grafo->inserirArestaNaoDirecionada("v6", "v8");
-	grafo->inserirArestaNaoDirecionada("v8", "v9");
-	grafo->inserirArestaNaoDirecionada("v9", "v9");
-}
-
-void inserirVertices2(GrafoListaAdj* grafo, int ini, int fim) {
+void inserirVertices(GrafoListaAdj* grafo, int ini, int fim) {
 	for (int i = ini; i <= fim; i++) {
 		string rotulo;
-		std::stringstream sstm;
+		stringstream sstm;
 		sstm << "v" << i;
 		rotulo = sstm.str();
 		grafo->inserirVertice(rotulo);
 	}
+}
+
+int somaArestasMST(GrafoListaAdj* grafoMST) {
+	int pesoArestas = 0;
+	cout << "Tamanho: " << to_string(grafoMST->getArestas().size()) << endl;
+	for (int vOrigem = 0; vOrigem < grafoMST->getArestas().size(); vOrigem++) {
+		cout << "Qtdade de Arestas com origem em " << to_string(vOrigem) <<": " << to_string(grafoMST->getArestas().at(vOrigem).size()) << endl;
+		if (!grafoMST->getArestas().at(vOrigem).empty()) {
+			//for (pair<int, int> arestaSaindoDeVOrigem : grafoMST->getArestas().at(vOrigem)) {
+			for (int i = 0; i < grafoMST->getArestas().at(vOrigem).size(); i++) {
+				cout << "Par: (" << to_string(grafoMST->getArestas().at(vOrigem).at(i).first) << "," << to_string(grafoMST->getArestas().at(vOrigem).at(i).second) << ")" << endl;
+				//first é o indice do vertice, second é o peso (caso o grafo seja ponderado)
+				pesoArestas += grafoMST->getArestas().at(vOrigem).at(i).second;
+			}
+		}
+	}
+	return pesoArestas;
 }
 
 void printVertices(vector<string> vertices){
@@ -98,27 +53,47 @@ void printArestas(vector<vector<pair<int, int>>> arestas){
 int main() {
     GrafoListaAdj* grafo = new GrafoListaAdj();
 
-	inserirVertices2(grafo, 0, 17);
-    // inserirVertices2(grafo,1,10);
-	construirGrafoCom5Componentes(grafo);
-	// construirGrafoNaoPonderado(grafo);
+	inserirVertices(grafo, 1, 10);
 	
-    vector<string> vertices = grafo->getVertices();
-    vector<vector<pair<int, int>>> arestas = grafo->getArestas();
+	//Grafo: https://www.youtube.com/watch?v=JZBQLXgSGfs&t
+	grafo->inserirArestaNaoDirecionada("v1", "v2", 5);
+	grafo->inserirArestaNaoDirecionada("v1", "v4", 4);
+	grafo->inserirArestaNaoDirecionada("v1", "v5", 1);
+	grafo->inserirArestaNaoDirecionada("v2", "v3", 4);
+	grafo->inserirArestaNaoDirecionada("v2", "v4", 2);
+	grafo->inserirArestaNaoDirecionada("v3", "v8", 4);
+	grafo->inserirArestaNaoDirecionada("v3", "v9", 1);
+	grafo->inserirArestaNaoDirecionada("v3", "v10", 2);
+	grafo->inserirArestaNaoDirecionada("v4", "v5", 2);
+	grafo->inserirArestaNaoDirecionada("v4", "v6", 5);
+	grafo->inserirArestaNaoDirecionada("v4", "v7", 11);
+	grafo->inserirArestaNaoDirecionada("v4", "v8", 2);
+	grafo->inserirArestaNaoDirecionada("v5", "v6", 1);
+	grafo->inserirArestaNaoDirecionada("v6", "v7", 7);
+	grafo->inserirArestaNaoDirecionada("v7", "v8", 1);
+	grafo->inserirArestaNaoDirecionada("v7", "v9", 4);
+	grafo->inserirArestaNaoDirecionada("v8", "v9", 6);
+	grafo->inserirArestaNaoDirecionada("v9", "v10", 0);
 
-    cout << "==Antes==\n";
-    printVertices(vertices);
-    printArestas(arestas);
+	// v1 = a
+	// v2 = b
+	// v3 = c
+	// v4 = d
+	// v5 = e
+	// v6 = f
+	// v7 = g
+	// v8 = h
+	// v9 = i
+	// v10 = j
 
-    int colorido = grafo->colorir(); // 1
+	printVertices(grafo->getVertices());
+	printArestas(grafo->getArestas());
 
-    vertices = grafo->getVertices();
-    arestas = grafo->getArestas();
-    
-    cout << "==Depois==\n";
-    printVertices(vertices);
-    printArestas(arestas);
-    cout << "colorido: " << colorido << endl;
+	GrafoListaAdj* grafoMST = grafo->KruskalMST();
+
+	int pesoArestas = somaArestasMST(grafoMST);
+
+	cout << "pesoArestas: " << pesoArestas << endl;
 
 	delete(grafo);
 

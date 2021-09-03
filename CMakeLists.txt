@@ -13,7 +13,7 @@ add_subdirectory(src/lib/grafonavegacao)
 add_subdirectory(src/lib/grafomenorcaminho)
 add_subdirectory(src/lib/grafomst)
 
-add_executable(main src/main.cpp src/lib/grafomatadj/grafomatadj.cpp src/lib/grafonavegacao/grafonavegacao.cpp)
+add_executable(main src/main.cpp src/lib/grafomst/grafomst.cpp)
 
 enable_testing()
 add_subdirectory(googletest)

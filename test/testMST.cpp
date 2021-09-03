@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../src/lib/grafomst/grafomst.h"
+#include "../src/lib/grafomst/grafomstexercicio.h"
 using namespace std;
 
 class MSTTest : public ::testing::Test {
