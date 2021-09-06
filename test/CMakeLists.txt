@@ -5,6 +5,7 @@ add_executable(
     testGrafoNavegacao.cpp
     # testMenorCaminho.cpp
     testMST.cpp
+    testTabelaHash.cpp
     )
 
 target_link_libraries(
