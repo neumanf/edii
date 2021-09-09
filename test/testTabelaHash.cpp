@@ -40,6 +40,7 @@ TEST_F(TabelaHashTest, ForcarAumentoDeTabela) {
 	criarTabela(estoqueSupermercadoTabelaHash,qtdadeRepeticoes,itens);
 	for (int i = 0; i < 5; i++) {
 		for (int j = 1; j <= qtdadeRepeticoes; j++) {
+			cout << i << " " << j << " " << estoqueSupermercadoTabelaHash.contemChave(itens[i] + to_string(j)) << endl;
 			EXPECT_TRUE(estoqueSupermercadoTabelaHash.contemChave(itens[i] + to_string(j)));
 		}
 	}

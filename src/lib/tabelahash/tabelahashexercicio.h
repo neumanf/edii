@@ -28,6 +28,10 @@ class Tupla {
 			return prox;
 		}
 
+		void setValor(V valor) {
+			Tupla::valor = valor;
+		}
+
 		void setProx(Tupla* prox) {
 			Tupla::prox = prox;
 		}
@@ -44,6 +48,13 @@ class TabelaHash {
 		//qtdade de elementos já inseridos na tabela hash
 		int tamanho;
 
+		int obterPosicaoDaChave(Chave chave) {
+			hash<string> hash_string;
+			int hash = hash_string(chave);
+
+			return abs(hash) % qtde_buckets;
+		}
+
 		/**
 		* Função para inserir a tupla <c,v> na tabela.
 		* É preciso calcular o código hash a partir da chave c.
@@ -53,7 +64,41 @@ class TabelaHash {
 		* negativos: use abs() para evitar índices negativos.
 		**/
 		void inserir(Chave c, Valor v, Tupla<Chave, Valor>** tabela) {
-			//IMPLEMENTAR
+			int posicao = obterPosicaoDaChave(c);
+
+			Tupla<Chave, Valor>* entry = new Tupla<Chave, Valor>(c, v);
+
+			if(tabela[posicao] == NULL){
+				tabela[posicao] = entry;
+			} else {
+				Tupla<Chave, Valor>* entries = tabela[posicao];
+
+				while(entries->getProx() != NULL){
+					entries = entries->getProx();
+				}
+
+				entries->setProx(entry);
+			}
+
+			// Tupla<Chave, Valor>* p = NULL;
+			// Tupla<Chave, Valor>* en = tabela[posicao];
+
+			// while(en != NULL){
+			// 	p = en;
+			// 	en = en->getProx();
+			// }
+
+			// if(en == NULL){
+			// 	en = new Tupla<Chave, Valor>(c, v);
+
+			// 	if(p == NULL){
+			// 		tabela[posicao] = en;
+			// 	} else {
+			// 		p->setProx(en);
+			// 	}
+			// } else {
+			// 	en->setValor(v);
+			// }
 		}
 
 		/**
@@ -66,7 +111,27 @@ class TabelaHash {
 		* será diferente.
 		**/
 		void aumentaArray() {
-			//IMPLEMENTAR
+			qtde_buckets *= 8;
+
+			Tupla<Chave, Valor>** novaTabela = new Tupla<Chave, Valor>*[qtde_buckets];
+
+			for(int i = 0; i < qtde_buckets; i++){
+				novaTabela[i] = NULL;
+			}
+
+			cout << "qt buckets: " << qtde_buckets << ", " << qtde_buckets/8 << endl;
+
+			for(int i = 0; i < qtde_buckets / 8; i++) {
+				if(tabela[i] == NULL) continue;
+
+				int posicao = obterPosicaoDaChave(tabela[i]->getChave());
+
+				// cout << "posicao da chave " << tabela[i]->getChave() << ": " << posicao << endl;
+
+				novaTabela[posicao] = tabela[i];
+			}
+
+			tabela = novaTabela;
 		}
 
 	public:
@@ -77,7 +142,14 @@ class TabelaHash {
 		* para NULL.
 		**/
 		TabelaHash() {
-			//IMPLEMENTAR
+			qtde_buckets = 8;
+			tamanho = 0;
+
+			tabela = new Tupla<Chave, Valor>*[qtde_buckets];
+
+			for(int i = 0; i < qtde_buckets; i++){
+				tabela[i] = NULL;
+			}
 		}
 
 		/**
@@ -90,14 +162,19 @@ class TabelaHash {
 		* na tabela (variável tamanho).
 		**/
 		void inserir(Chave c, Valor v) {
-			//IMPLEMENTAR
+			double fator_de_carga = load_factor();
+			
+			if(fator_de_carga >= 1) aumentaArray();
+
+			inserir(c, v, tabela);
+			tamanho++;
 		}
 
 		/**
 		* Essa função retorna o fator de carga da Tabela Hash.
 		**/
 		double load_factor() {
-			return 0.0;
+			return (double) tamanho / qtde_buckets;
 		}
 
 		/**
@@ -109,9 +186,19 @@ class TabelaHash {
 		* existe ou não.
 		**/
 		Valor getValor(Chave chave) {
-			Valor valor;
+			int posicao = obterPosicaoDaChave(chave);
 
-			return valor;
+			Tupla<Chave, Valor>* entries = tabela[posicao];
+
+			if(entries != NULL){
+				while(entries->getChave() != chave && entries->getProx() != NULL){
+					entries = entries->getProx();
+				}
+
+				return entries->getValor();
+			}
+
+			return NULL;
 		}
 
 		/**
@@ -122,7 +209,38 @@ class TabelaHash {
 		* existe ou não.
 		**/
 		bool contemChave(Chave chave) {
-			return true;
+			int posicao = obterPosicaoDaChave(chave);
+
+			Tupla<Chave, Valor>* entries = tabela[posicao];
+
+			if(entries != NULL){
+				cout << "chave: " << entries->getChave() << endl;
+
+				while(entries->getChave() != chave && entries->getProx() != NULL){
+					entries = entries->getProx();
+				}
+
+				return true;
+			}
+
+			// cout << "posicao: " << posicao << endl;
+
+			// Tupla<Chave, Valor>* en = tabela[posicao];
+
+			// if(en != NULL){
+			// 	while(en != NULL){
+			// 		cout << "chave atual: " << en->getChave() << ", chave a ser comparada: " << chave << endl;
+			// 		if(en->getChave() == chave){
+			// 			cout << chave << " existe." << endl;
+			// 			return true;
+			// 		}
+
+			// 		en = en->getProx();
+			// 		cout << "prox: " << en->getChave() << endl;
+			// 	}
+			// }
+
+			return false;
 		}
 
 		/**
@@ -131,6 +249,19 @@ class TabelaHash {
 		**/
 		vector<Chave> getChaves() {
 			vector<Chave> vec;
+
+			for(int i = 0; i < qtde_buckets; i++){
+				Tupla<Chave, Valor>* entries = tabela[i];
+
+				if(entries != NULL){
+					while(entries != NULL){
+						vec.push_back(entries->getChave());
+
+						entries = entries->getProx();
+					}
+				}
+			}
+
 			return vec;
 		}
 
@@ -154,7 +285,26 @@ class TabelaHash {
 		* ou seja, navegável.
 		**/
 		void remover(Chave chave) {
-			//IMPLEMENTAR
+			int posicao = obterPosicaoDaChave(chave);
+
+			Tupla<Chave, Valor>* anterior = tabela[posicao];
+			Tupla<Chave, Valor>* atual = anterior->getProx();
+
+			while(atual != NULL){
+				if(atual->getChave() == chave){
+					break;
+				} else {
+					anterior = atual;
+					atual = atual->getProx();
+				}
+
+				if(atual != NULL){
+					anterior->setProx(atual->getProx());
+					delete atual;
+					tamanho--;
+				}
+			}
+
 		}
 
 		/**
@@ -171,5 +321,27 @@ class TabelaHash {
 		**/
 		int bucket_count() {
 			return qtde_buckets;
+		}
+
+		void printTabela() {
+			cout << "[";
+			for(int i = 0; i < qtde_buckets; i++) {
+				if(!tabela[i]) {
+					cout << 0 << ", ";
+				} else {
+					Tupla<string, int>* en = tabela[i];
+					
+					cout << "[";
+					if(en != NULL){
+						while(en != NULL){
+							cout << "{" << en->getChave() << ": " << en->getValor() << "}, ";
+
+							en = en->getProx();
+						}
+					}
+					cout << "], ";
+				}
+			}
+			cout << "]\n";
 		}
 };
